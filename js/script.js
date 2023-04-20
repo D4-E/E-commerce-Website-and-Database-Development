@@ -1,177 +1,147 @@
 $(document).ready(function () {
-    // Получаем элементы формы Login
-    var loginEmail = $('#login-email');
-    var loginPassword = $('#login-password');
+    // Функция для отправки данных на сервер
+    function postData(url, data, successCallback, errorCallback) {
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: JSON.stringify(data),
+            success: function (response) {
+                successCallback(response);
+            },
+            error: function (error) {
+                errorCallback(error.statusText);
+            },
+        });
+    }
 
-    // Получаем элементы формы Register
-    var registerName = $('#register-name');
-    var registerEmail = $('#register-email');
-    var registerPassword = $('#register-password');
+    // Функция для отображения уведомления
+    function showNotification(type, message, duration) {
+        var $notification = $("<div>", {
+            class: "notification " + type,
+            text: message,
+        });
+        var $progress = $("<div>", { class: "notification-progress" });
+        $notification.append($progress);
+        $("body").append($notification);
+        $notification.animate(
+            {
+                top: 20,
+                right: 20,
+                opacity: 1,
+            },
+            500
+        );
+        var intervalId = setInterval(function () {
+            var width = ($progress.width() / $notification.width()) * 100;
+            width += 100 / (duration * 10);
+            if (width > 100) {
+                clearInterval(intervalId);
+                $notification.animate(
+                    {
+                        top: -100,
+                        opacity: 0,
+                    },
+                    500,
+                    function () {
+                        $notification.remove();
+                    }
+                );
+            } else {
+                $progress.width((width / 100) * $notification.width());
+            }
+        }, 100);
+    }
 
-    // Получаем информационный блок
-    var message = $('#message');
+    // Получаем кнопки переключения формы
+    var $loginBtn = $("#login-btn");
+    var $registerBtn = $("#register-btn");
 
-    // Получаем элементы лоадера
-    var loaderContainer = $('.loader-container');
-    var loader = $('.loader');
-
-    // Получаем элементы уведомления
-    var notification = $('.notification');
+    // Получаем формы авторизации и регистрации
+    var $loginForm = $("#login-form");
+    var $registerForm = $("#register-form");
 
     // Добавляем обработчик события для кнопки Login
-    $('#login-btn').on('click', function () {
+    $loginBtn.on("click", function () {
         // Убираем класс active у кнопки Register
-        $('#register-btn').removeClass('active');
+        $registerBtn.removeClass("active");
         // Добавляем класс active кнопке Login
-        $(this).addClass('active');
+        $loginBtn.addClass("active");
         // Показываем форму Login
-        $('#login-form').show();
+        $loginForm.show();
         // Скрываем форму Register
-        $('#register-form').hide();
+        $registerForm.hide();
     });
 
     // Добавляем обработчик события для кнопки Register
-    $('#register-btn').on('click', function () {
+    $registerBtn.on("click", function () {
         // Убираем класс active у кнопки Login
-        $('#login-btn').removeClass('active');
+        $loginBtn.removeClass("active");
         // Добавляем класс active кнопке Register
-        $(this).addClass('active');
+        $registerBtn.addClass("active");
         // Скрываем форму Login
-        $('#login-form').hide();
+        $loginForm.hide();
         // Показываем форму Register
-        $('#register-form').show();
+        $registerForm.show();
     });
 
-    // Добавляем обработчик события для формы Login
-    $('#login-form').on('submit', function (event) {
+    // Добавляем обработчик события для формы авторизации
+    $loginForm.on("submit", function (event) {
         // Отменяем стандартное поведение формы
         event.preventDefault();
-        // Отображаем лоадер и блокируем форму
-        showLoader();
-        disableForm('#login-form');
+        // Получаем данные из формы
+        var email = $loginForm.find("#email").val();
+        var password = $loginForm.find("#password").val();
+        var data = {
+            email: email,
+            password: password,
+        };
+        // Отправляем данные на сервер
+        postData(
+            "process.php",
+            data,
+            function (response) {
+                // Показываем уведомление об успешной авторизации
+                showNotification("Success", "You have successfully logged in!", 5);
 
-        // Отправляем запрос на сервер
-        $.ajax({
-            url: 'process.php',
-            method: 'POST',
-            data: {
-                email: loginEmail.val(),
-                password: loginPassword.val(),
+                // Сбрасываем значения полей формы
+                $loginForm[0].reset();
             },
-            success: function (response) {
-                // Скрываем лоадер и разблокируем форму
-                hideLoader();
-                enableForm('#login-form');
-
-                // Очищаем поля формы
-                loginEmail.val('');
-                loginPassword.val('');
-
-                // Отображаем сообщение об успешной авторизации
-                showMessage('You have successfully logged in.');
-            },
-            error: function () {
-                // Скрываем лоадер и разблокируем форму
-                hideLoader();
-                enableForm('#login-form');
-
-                // Очищаем поля формы
-                loginEmail.val('');
-                loginPassword.val('');
-
-                // Отображаем сообщение об ошибке
-                showMessage('Login failed. Please try again.');
-            },
-        });
-    });
-
-    // Добавляем обработчик события для формы Register
-    $('#register-form').on('submit', function (event) {
-        // Отменяем стандартное поведение формы
-        event.preventDefault();
-        // Отображаем лоадер и блокируем форму
-        showLoader();
-        disableForm('#register-form');
-
-        // Отправляем запрос на сервер
-        $.ajax({
-            url: 'process.php',
-            method: 'POST',
-            data: {
-                name: registerName.val(),
-                email: registerEmail.val(),
-                password: registerPassword.val(),
-            },
-            success: function (response) {
-                // Скрываем лоадер и разблокируем форму
-                hideLoader();
-                enableForm('#register-form');
-
-                // Очищаем поля формы
-                registerName.val('');
-                registerEmail.val('');
-                registerPassword.val('');
-
-                // Отображаем сообщение об успешной регистрации
-                showMessage('You have successfully registered.');
-            },
-            error: function () {
-                // Скрываем лоадер и разблокируем форму
-                hideLoader();
-                enableForm('#register-form');
-
-                // Очищаем поля формы
-                registerName.val('');
-                registerEmail.val('');
-                registerPassword.val('');
-
-                // Отображаем сообщение об ошибке
-                showMessage('Registration failed. Please try again.');
-            },
-        });
-    });
-
-    // Функция для отображения лоадера
-    function showLoader() {
-        loaderContainer.show();
-    }
-
-    // Функция для скрытия лоадера
-    function hideLoader() {
-        loaderContainer.hide();
-    }
-
-    // Функция для блокировки формы
-    function disableForm(formId) {
-        $(formId + ' input, ' + formId + ' button').attr('disabled', true);
-    }
-
-    // Функция для разблокировки формы
-    function enableForm(formId) {
-        $(formId + ' input, ' + formId + ' button').attr('disabled', false);
-    }
-
-    // Функция для отображения сообщения
-    function showMessage(text) {
-        // Отображаем блок уведомления
-        notification.show();
-        // Устанавливаем текст сообщения
-        $('.notification-message').text(text);
-
-        // Запускаем анимацию шкалы прогресса
-        $('.notification-progress').animate(
-            { width: '100%' },
-            5000,
-            function () {
-                // Скрываем блок уведомления после завершения анимации
-                notification.hide();
-                // Обнуляем шкалу прогресса
-                $('.notification-progress').css('width', 0);
+            function (error) {
+                // Показываем уведомление об ошибке авторизации
+                showNotification("Error", error, 5);
             }
         );
-    }
+    });
+
+    // Добавляем обработчик события для формы регистрации
+    $registerForm.on("submit", function (event) {
+        // Отменяем стандартное поведение формы
+        event.preventDefault();
+        // Получаем данные из формы
+        var name = $registerForm.find("#name").val();
+        var email = $registerForm.find("#email").val();
+        var password = $registerForm.find("#password").val();
+        var data = {
+            name: name,
+            email: email,
+            password: password,
+        };
+        // Отправляем данные на сервер
+        postData(
+            "process.php",
+            data,
+            function (response) {
+                // Показываем уведомление об успешной регистрации
+                showNotification("Success", "You have successfully registered!", 5);
+                // Скрываем форму регистрации
+                $registerForm.hide();
+                // Сбрасываем значения полей формы
+                $registerForm[0].reset();
+            },
+            function (error) {
+                // Показываем уведомление об ошибке регистрации
+                showNotification("Error", error, 5);
+            }
+        );
+    });
 });
-
-
-
-

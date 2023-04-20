@@ -19,8 +19,7 @@
 
 .form-switcher button {
     border: none;
-    background-color: #eaeaea;
-    cursor: pointer;
+    background-color: #eaeaea cursor: pointer;
     margin: 0 10px;
     font-size: 18px;
     color: #999999;
@@ -78,53 +77,623 @@
 /* Стили для лоадера */
 .loader-container {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+}
+
+.spinner-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 999;
-    display: none;
+    width: 100px;
+    height: 100px;
 }
 
-.loader {
-    width: 50px;
-    height: 50px;
+.spinner-container div {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
-    border: 3px solid #fff;
-    border-top-color: #ff5733;
-    animation: spin 1s infinite linear;
+    background-color: #ffd700;
+    animation-name: spin;
+    animation-duration: 1.2s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+}
+
+.spinner-1 {
+    transform: translate(-50%, -110%);
+}
+
+.spinner-2 {
+    transform: translate(-15%, -110%);
+}
+
+.spinner-3 {
+    transform: translate(80%, -60%);
+}
+
+.spinner-4 {
+    transform: translate(110%, -5%);
+}
+
+.spinner-5 {
+    transform: translate(80%, 50%);
+}
+
+.spinner-6 {
+    transform: translate(-15%, 110%);
+}
+
+.spinner-7 {
+    transform: translate(-50%, 110%);
+}
+
+.spinner-8 {
+    transform: translate(-95%, 50%);
+}
+
+.spinner-9 {
+    transform: translate(-125%, -5%);
+}
+
+.spinner-10 {
+    transform: translate(-95%, -60%);
+}
+
+.spinner-11 {
+    transform: translate(-50%, -80%);
+}
+
+.spinner-12 {
+    transform: translate(0, -80%);
 }
 
 @keyframes spin {
-    to {
-        transform: rotate(360deg);
+    0% {
+        transform: translate(-50%, -110%) scale(1);
     }
-}
 
-/* Стили для уведомления */
-.notification {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: #ff5733;
-    color: #fff;
-    padding: 20px;
-    font-size: 18px;
-    font-weight: bold;
-    display: none;
-}
+    10% {
+        transform: translate(-50%, -110%) scale(0.6);
+    }
 
-.notification-message {
-    display: inline-block;
-}
+    20% {
+        transform: translate(-50%, -110%) scale(1);
+    }
 
-.notification-progress {
-    height: 4px;
-    background-color: #fff;
-    margin-top: 5px;
-}
+    30% {
+        transform: translate(-15%, -110%) scale(0.6);
+    }
+
+    40% {
+        transform: translate(-15%, -110%) scale(1
+        }
+
+        50% {
+            transform: translate(-15%, -110%) scale(0.6);
+        }
+
+        60% {
+            transform: translate(-15%, -110%) scale(1);
+        }
+
+        70% {
+            transform: translate(80%, -60%) scale(0.6);
+        }
+
+        80% {
+            transform: translate(80%, -60%) scale(1);
+        }
+
+        90% {
+            transform: translate(110%, -5%) scale(0.6);
+        }
+
+        100% {
+            transform: translate(110%, -5%) scale(1);
+        }
+    }
+
+    /* Стили для блока уведомлений */
+    .notification-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+
+    .notification {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 300px;
+        padding: 20px;
+        border-radius: 10px;
+        background-color: #f5f5f5;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        color: #333333;
+    }
+
+    .notification.success {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .notification.error {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .notification-info {
+        display: flex;
+        align-items: center;
+    }
+
+    .notification-icon {
+        margin-right: 10px;
+    }
+
+    .notification-progress {
+        height: 5px;
+        width: 100%;
+        border-radius: 5px;
+        background-color: #e4e4e4;
+        margin-top: 10px;
+        position: relative;
+    }
+
+    .notification-progress-bar {
+        height: 5px;
+        border-radius: 5px;
+        background-color: #ffd700;
+        position: absolute;
+        top: 0;
+        left: 0;
+        transition: width 0.2s ease-in-out;
+    }
+
+    .notification-close {
+        cursor: pointer;
+    }
+
+    /* Стили для формы */
+    .form {
+        width: 670px;
+        border-radius: 20px;
+        background-color: #f2f2f2;
+        margin: 50px auto;
+        padding: 50px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        max-height: calc(100vh - 200px);
+        overflow-y: auto;
+    }
+
+    .form-switcher {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .form-switcher button {
+        border: none;
+        background-color: #eaeaea;
+        cursor: pointer;
+        margin: 0 10px;
+        font-size: 18px;
+        color: #999999;
+        text-decoration: none;
+        border-radius: 20px;
+        padding: 10px 20px;
+    }
+
+    .form-switcher button.active {
+        background-color: #ffd700;
+        color: #000000;
+    }
+
+    .form-inputs {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .form-inputs label {
+        margin-top: 20px;
+        font-size: 18px;
+    }
+
+    .form-inputs input[type="text"],
+    .form-inputs input[type="email"],
+    .form-inputs input[type="password"] {
+        width: 300px;
+        height: 30px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        padding: 5px;
+        font-size: 16px;
+        margin-top: 5px;
+    }
+
+    .form-inputs button[type="submit"] {
+        width: 150px;
+        height: 40px;
+        border-radius: 5px;
+        border: none;
+        background-color: #ffd700;
+        color: #000000;
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 20px;
+        cursor: pointer;
+    }
+
+    .form-inputs button[type="submit"]:hover {
+        background-color: #ffc107;
+    }
+
+    /* Стили для модального окна */
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-content {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        text-align: center;
+    }
+
+    .modal-close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+    }
+
+    /* Стили для спиннера */
+    .spinner {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
+
+    .spinner .ball {
+        height: 40px;
+        width: 40px;
+        margin: 0 5px;
+        border-radius: 50%;
+        animation: ball-scale 1s ease-in-out infinite;
+    }
+
+    .spinner .ball:nth-of-type(1) {
+        background-color: #ffd700;
+        animation-delay: 0.1s;
+    }
+
+    .spinner .ball:nth-of-type(2) {
+        background-color: #ffc107;
+        animation-delay: 0.2s;
+    }
+
+    .spinner .ball:nth-of-type(3) {
+        background-color: #ffb300;
+        animation-delay: 0.3s;
+    }
+
+    .spinner .ball:nth-of-type(4) {
+        background-color: #ffa500;
+        animation-delay: 0.4s;
+    }
+
+    .spinner .ball:nth-of-type(5) {
+        background-color: #ff9900;
+        animation-delay: 0.5s;
+    }
+
+    .spinner .ball:nth-of-type(6) {
+        background-color: #ff8c00;
+        animation-delay: 0.6s;
+    }
+
+    .spinner .ball:nth-of-type(7) {
+        background-color: #ff7f00;
+        animation-delay: 0.7s;
+    }
+
+    .spinner .ball:nth-of-type(8) {
+        background-color: #ff6a00;
+        animation-delay: 0.8s;
+    }
+
+    @keyframes ball-scale {
+        0% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(0.5);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    /* Стили для шкалы прогресса */
+    .progress-bar {
+        height: 10px;
+        width: 100%;
+        border-radius: 10px;
+        background-color: #e4e4e4;
+        margin-top: 20px;
+        position: relative;
+    }
+
+    .progress-bar-fill {
+        height: 100%;
+        border-radius: 10px;
+        background-color: #ffd700;
+    }
+
+    /* Стили для уведомления */
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        width: 300px;
+        border-radius: 10px;
+        background-color: #ffffff;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        z-index: 9999;
+        overflow: hidden;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .notification.show {
+        opacity: 1;
+    }
+
+    .notification-content {
+        padding: 20px;
+        text-align: center;
+    }
+
+    .notification-close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+    }
+
+    .notification-progress {
+        height: 5px;
+        width: 100%;
+        background-color: #ffc107;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        border-radius: 5px;
+        animation: progress-fill 10s linear forwards;
+    }
+
+    @keyframes progress-fill {
+        0% {
+            width: 100%;
+        }
+
+        100% {
+            width: 0%;
+        }
+    }
+
+    /* Общие стили для кнопок переключения форм */
+    .form-switcher {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .form-switcher button {
+        border: none;
+        background-color: #eaeaea;
+        cursor: pointer;
+        margin: 0 10px;
+        font-size: 18px;
+        color: #999999;
+        text-decoration: none;
+        border-radius: 20px;
+        padding: 10px 20px;
+    }
+
+    .form-switcher button.active {
+        background-color: #ffd700;
+        color: #000000;
+    }
+
+    /* Стили для формы */
+    .form-inputs {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .form-inputs label {
+        margin-top: 20px;
+        font-size: 18px;
+    }
+
+    .form-inputs input[type="text"],
+    .form-inputs input[type="email"],
+    .form-inputs input[type="password"] {
+        width: 300px;
+        height: 30px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        padding: 5px;
+        font-size: 16px;
+        margin-top: 5px;
+    }
+
+    .form-inputs button[type="submit"] {
+        width: 150px;
+        height: 40px;
+        border-radius: 5px;
+        border: none;
+        background-color: #ffd700;
+        color: #000000;
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 20px;
+        cursor: pointer;
+    }
+
+    .form-inputs button[type="submit"]:hover {
+        background-color: #ffc107;
+    }
+
+    /* Стили для модального окна */
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Стили для спиннера */
+    .spinner {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100px;
+        height: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+
+    .spinner-circle {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: #ffd700;
+        margin: 5px;
+        animation: spinner-rotate 1s ease-in-out infinite;
+    }
+
+    .spinner-circle:nth-child(1) {
+        width: 40px;
+        height: 40px;
+        animation-delay: 0.1s;
+    }
+
+    .spinner-circle:nth-child(2) {
+        width: 30px;
+        height: 30px;
+        animation-delay: 0.2s;
+    }
+
+    .spinner-circle:nth-child(3) {
+        width: 20px;
+        height: 20px;
+        animation-delay: 0.3s;
+    }
+
+    .spinner-circle:nth-child(4) {
+        width: 10px;
+        height: 10px;
+        animation-delay: 0.4s;
+    }
+
+    @keyframes spinner-rotate {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Стили для затемнения фона */
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 9998;
+    }
+
+    /* Стили для уведомления */
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #f2f2f2;
+        border-radius: 10px;
+        padding: 10px 20px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        z-index: 9999;
+    }
+
+    .notification-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .notification-message {
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+    .notification-bar {
+        width: 100%;
+        height: 10px;
+        background-color: #ccc;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+    .notification-bar-fill {
+        height: 100%;
+        background-color: #ffd700;
+        border-radius: 5px;
+        animation: notification-fill 10s linear;
+    }
+
+    @keyframes notification-fill {
+        0% {
+            width: 0%;
+        }
+
+        100% {
+            width: 100%;
+        }
+    }
