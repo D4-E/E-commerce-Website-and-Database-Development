@@ -1,200 +1,240 @@
+<?php
+// Имитация данных, полученных из базы данных
+$products = [];
+for ($i = 1; $i <= 12; $i++) {
+    $products[] = [
+        'id' => $i,
+        'name' => "Product $i",
+        'price' => $i * 10,
+        'image' => "https://via.placeholder.com/150?text=Product+$i",
+        'details' => "Product $i details..."
+    ];
+}
+?>
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catalog</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.css">
     <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f2f2f2
-        }
-
+        /* Ваши стили */
         .container {
-            margin: 100px auto;
-            max-width: 940px;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            position: relative
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
         }
 
         .cart-icon {
-            position: absolute;
+            font-size: 24px;
+            position: fixed;
             top: 20px;
             right: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 150px;
-            height: 50px;
-            border-radius: 5px;
-            background-color: #ffd369;
-            color: #fff;
-            font-size: 24px;
-            text-align: center;
-            cursor: pointer
+            z-index: 100;
         }
 
         .slick-slider {
-            margin-top: 80px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between
-        }
-
-        .slick-prev:before,
-        .slick-next:before {
-            color: black
-        }
-
-        .slick-prev:before {
-            content: '←';
-            font-size: 40px;
-            position: absolute;
-            top: 50%;
-            left: 20px;
-            transform: translate(0, -50%);
-            z-index: 1;
-            cursor: pointer
-        }
-
-        .slick-next:before {
-            content: '→';
-            font-size: 40px;
-            position: absolute;
-            top: 50%;
-            right: 20px;
-            transform: translate(0, -50%);
-            z-index: 1;
-            cursor: pointer
+            margin-bottom: 20px;
         }
 
         .product {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            margin: 20px;
-            border: 1px solid #e0e0e0;
-            border-radius: 10px;
-            width: calc((100% / 4) - 30px);
-            height: 350px;
             text-align: center;
-            overflow: hidden;
-            position: relative
-        }
-
-        .product-image {
-            width: 100%;
-            height: 70%;
-            margin-bottom: 10px
-        }
-
-        .product-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 5px
-        }
-
-        .product-name {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px
-        }
-
-        .product-price {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 10px
-        }
-
-        .product-actions {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: auto;
-            margin-bottom: 10px
-        }
-
-        .quantity-btn {
-            width: 30px;
-            height: 30px;
-            margin: 0 5px;
-            background-color: #e0 e0e0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            padding: 20px;
+            background-color: #f2f2f2;
             border-radius: 5px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            margin: 10px;
+            position: relative;
+            perspective: 1000px;
+            transition: all 0.5s;
+        }
+
+        .product.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .product img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .quantity-controls {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .minus-btn,
+        .plus-btn {
+            width: 50%;
+            padding: 10px;
+            border: none;
+            background-color: #ccc;
             cursor: pointer;
-            user-select: none;
-            transition: 0.3s;
         }
 
-        .quantity-btn:hover {
-            background-color: #c0c0c0;
-        }
-
-        .quantity {
-            margin: 0 10px;
+        .minus-btn:hover,
+        .plus-btn:hover {
+            background-color: #999;
         }
 
         .details-btn {
-            display: inline-block;
-            background-color: #ffd369;
+            background-color: #555;
             color: #fff;
-            font-size: 14px;
-            font-weight: bold;
-            padding: 5px 10px;
+            border: none;
             border-radius: 5px;
+            padding: 10px 15px;
+            margin-top: 10px;
             cursor: pointer;
-            transition: 0.3s;
         }
 
         .details-btn:hover {
-            background-color: #f0c851;
+            background-color: #333;
         }
 
         .product-details {
-            display: none;
             position: absolute;
-            top: 0;
-            left: 0;
+            backface-visibility: hidden;
             width: 100%;
             height: 100%;
-            background-color: #fff;
+            top: 0;
+            left: 0;
             padding: 20px;
-            text-align: left;
-            border-radius: 10px;
-            backface-visibility: hidden;
-            transform-style: preserve-3d;
-            transition: 0.6s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f2f2f2;
+            transform: rotateY(180deg);
+            opacity: 0;
+            transition: all 0.5s;
         }
 
-        .product.flip .product-details {
-            display: block;
+        .product.flipped .product-details {
+            opacity: 1;
         }
+
+        /* Ваши добавленные стили */
+        .rectangle {
+            width: 670px;
+            border-radius: 20px;
+            background-color: #f2f2f2;
+            margin: 50px auto;
+            padding:     50px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
+
+        /* Другие стили */
+        /* ... */
+
+        .cart {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+        }
+
+        .cart-total {
+            margin-left: 10px;
+            font-size: 18px;
+        }
+
+        .checkout-btn {
+            background-color: #ffd700;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            margin-left: 20px;
+            cursor: pointer;
+        }
+
+        .checkout-btn:hover {
+            background-color: #ffc107;
+        }
+
+        .product h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .product p {
+            margin: 5px 0;
+        }
+
     </style>
 </head>
-
 <body>
-    <div class="container">
-        <div class="cart-icon">🛒</div>
+<div class="container">
+    <div class="cart">
+        <span class="cart-icon">🛒</span>
+        <span class="cart-total">0</span>
+        <button class="checkout-btn" data-items="0">Оформить заказ</button>
+    </div>
+    <div class="rectangle">
         <div class="slick-slider">
-            <div class="slick-prev"></div>
-            <!-- Add your product cards here -->
-            <div class="slick-next"></div>
+            <?php foreach ($products as $product) : ?>
+                <div class="product" data-id="<?php echo $product['id']; ?>">
+                    <img src="<?php echo $product['image']; ?>" alt="<?php echo $product['name']; ?>">
+                    <h3><?php echo $product['name']; ?></h3>
+                    <p>Price: $<?php echo $product['price']; ?></p>
+                    <div class="quantity-controls">
+                        <button class="minus-btn">-</button>
+                        <button class="plus-btn">+</button>
+                    </div>
+                    <button class="details-btn">Details</button>
+                    <div class="product-details">
+                        <?php echo $product['details']; ?>
+                    </div>
+                </div>
+            <?php endforeach; ?>
         </div>
     </div>
-    <script>
-        document.querySelectorAll('.details-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                btn.closest('.product').classList.toggle('flip');
-            });
-        });
-    </script>
-</body>
+</div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.slick-slider').slick({
+            slidesToShow: 4,
+            slidesToScroll: 4,
+            prevArrow: '<button type="button" class="slick-prev">Previous</button>',
+            nextArrow: '<button type="button" class="slick-next">Next</button>',
+        });
+
+        $('.details-btn').on('click', function () {
+            $(this).closest('.product').toggleClass('flipped');
+        });
+
+        $('.plus-btn').on('click', function () {
+            var cartIcon = $('.cart-icon');
+            var currentItems = parseInt(cartIcon.attr('data-items'));
+            cartIcon.attr('data-items', currentItems + 1);
+            cartIcon.text('🛒 ' + (currentItems + 1));
+        });
+
+        $('.minus-btn').on('click', function () {
+            var cartIcon = $('.cart-icon');
+            var currentItems = parseInt(cartIcon.attr('data-items'));
+            if (currentItems > 0) {
+                cartIcon.attr('data-items', currentItems - 1);
+                cartIcon.text('🛒 ' + (currentItems - 1));
+            }
+        });
+    });
+</script>
+</body>
 </html>

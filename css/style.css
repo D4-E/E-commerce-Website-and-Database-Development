@@ -19,7 +19,8 @@
 
 .form-switcher button {
     border: none;
-    background-color: #eaeaea cursor: pointer;
+    background-color: #eaeaea;
+    cursor: pointer;
     margin: 0 10px;
     font-size: 18px;
     color: #999999;
