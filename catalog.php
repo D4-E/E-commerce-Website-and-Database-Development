@@ -29,12 +29,35 @@ for ($i = 1; $i <= 12; $i++) {
             padding: 0 15px;
         }
 
-        .cart-icon {
-            font-size: 24px;
+        .cart {
             position: fixed;
             top: 20px;
             right: 20px;
-            z-index: 100;
+            display: flex;
+            align-items: center;
+        }
+
+        .cart-icon {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+
+        .cart-total {
+            font-size: 18px;
+            margin-right: 20px;
+        }
+
+        .checkout-btn {
+            background-color: #ffd700;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+
+        .checkout-btn:hover {
+            background-color: #ffc107;
         }
 
         .slick-slider {
@@ -84,8 +107,8 @@ for ($i = 1; $i <= 12; $i++) {
         }
 
         .details-btn {
-            background-color: #555;
-            color: #fff;
+            background-color: #ffd700;
+            color: #000;
             border: none;
             border-radius: 5px;
             padding: 10px 15px;
@@ -94,7 +117,7 @@ for ($i = 1; $i <= 12; $i++) {
         }
 
         .details-btn:hover {
-            background-color: #333;
+            background-color: #ffc107;
         }
 
         .product-details {
@@ -118,62 +141,16 @@ for ($i = 1; $i <= 12; $i++) {
             opacity: 1;
         }
 
-        /* Ваши добавленные стили */
         .rectangle {
             width: 670px;
             border-radius: 20px;
             background-color: #f2f2f2;
             margin: 50px auto;
-            padding:     50px;
+            padding: 50px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
             max-height: calc(100vh - 200px);
             overflow-y: auto;
         }
-
-        /* Другие стили */
-        /* ... */
-
-        .cart {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: #fff;
-            padding: 15px;
-            border-radius: 5px;
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-            z-index: 100;
-            display: flex;
-            align-items: center;
-        }
-
-        .cart-total {
-            margin-left: 10px;
-            font-size: 18px;
-        }
-
-        .checkout-btn {
-            background-color: #ffd700;
-            color: #000;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 15px;
-            margin-left: 20px;
-            cursor: pointer;
-        }
-
-        .checkout-btn:hover {
-            background-color: #ffc107;
-        }
-
-        .product h3 {
-            margin: 0;
-            font-size: 18px;
-        }
-
-        .product p {
-            margin: 5px 0;
-        }
-
     </style>
 </head>
 <body>
@@ -203,7 +180,6 @@ for ($i = 1; $i <= 12; $i++) {
         </div>
     </div>
 </div>
-
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
 <script>
@@ -236,5 +212,7 @@ for ($i = 1; $i <= 12; $i++) {
         });
     });
 </script>
+
 </body>
 </html>
+
