@@ -15,7 +15,7 @@
         .rectangle {
             width: 670px;
             border-radius: 20px;
-            background-color: #F2F2F2;
+            background-color: #f2f2f2;
             margin: 50px auto;
             padding: 50px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
@@ -32,7 +32,7 @@
 
         .form-switcher button {
             border: none;
-            background-color: #EAEAEA;
+            background-color: #eaeaea;
             cursor: pointer;
             margin: 0 10px;
             font-size: 18px;
@@ -43,7 +43,7 @@
         }
 
         .form-switcher button.active {
-            background-color: #FFD700;
+            background-color: #ffd700;
             color: #000000;
         }
 
@@ -62,8 +62,7 @@
         .form-inputs input[type="text"],
         .form-inputs input[type="email"],
         .form-inputs input[type="password"] {
-            width:
-                300px;
+            width: 300px;
             height: 30px;
             border-radius: 5px;
             border: 1px solid #ccc;
@@ -77,7 +76,7 @@
             height: 40px;
             border-radius: 5px;
             border: none;
-            background-color: #FFD700;
+            background-color: #ffd700;
             color: #000000;
             font-size: 18px;
             font-weight: bold;
@@ -86,64 +85,66 @@
         }
 
         .form-inputs button[type="submit"]:hover {
-            background-color: #FFC107;
+            background-color: #ffc107;
         }
 
         /* Стили для лоадера */
         .loader-container {
             position: fixed;
             top: 0;
-            bottom: 0;
             left: 0;
-            right: 0;
+            width: 100%;
+            height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
             z-index: 9999;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
         }
 
         .loader {
-            display: inline-block;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #fff;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
             position: relative;
-            width: 40px;
-            height: 40px;
         }
 
-        .loader div {
-            display: inline-block;
+        .loader:before {
+            content: "";
+            display: block;
+            width: 60%;
+            height: 60%;
+            border-radius: 50%;
             position: absolute;
-            left: 8px;
-            width: 16px;
-            background: #000;
-            animation: loader 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+            top: 20%;
+            left: 20%;
+            border: 5px solid #ffd700;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
         }
 
-        .loader div:nth-child(1) {
-            left: 8px;
-            animation-delay: -0.24s;
+        .loader:after {
+            content: "";
+            display: block;
+            width: 40%;
+            height: 40%;
+            border-radius: 50%;
+            position: absolute;
+            top: 30%;
+            left: 30%;
+            border: 5px solid #ffd700;
+            border-bottom-color: transparent;
+            animation: spin 0.5s ease-in-out infinite reverse;
         }
 
-        .loader div:nth-child(2) {
-            left: 8px;
-            animation-delay: -0.12s;
-        }
-
-        .loader div:nth-child(3) {
-            left: 32px;
-            animation-delay: 0;
-        }
-
-        @keyframes loader {
-            0% {
-                top: 8px;
-                height: 24px;
-            }
-
-            50%,
-            100% {
-                top: 0;
-                height: 40px;
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
             }
         }
 
@@ -152,45 +153,49 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            width: 250px;
-            background-color: #333;
+            background-color: #fff;
             border-radius: 10px;
-            padding: 10px;
-            color: #fff;
-            text-align: center;
-            font-size: 16px;
-            z-index: 9999;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            padding: 20px;
             display: none;
         }
 
         .notification-message {
+            font-size: 18px;
             margin-bottom: 10px;
+            color: #000000;
         }
 
         .notification-progress {
             height: 5px;
-            background-color: #fff;
+            background-color: #ffc107;
             border-radius: 5px;
-            width: 0;
-            transition: width 5s linear;
+            width: 0%;
         }
     </style>
 </head>
 
 <body>
+    <div class="loader-container">
+        <div class="loader"></div>
+    </div>
+    <div class="notification">
+        <div class="notification-message"></div>
+        <div class="notification-progress"></div>
+    </div>
     <div class="rectangle">
         <div class="form-switcher">
             <button class="active" id="login-btn">Login</button>
             <button id="register-btn">Register</button>
         </div>
-        <form id="login-form" class="form-inputs" action="process.php" method="post">
+        <form id="login-form" class="form-inputs" method="post">
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
             <button type="submit">Login</button>
         </form>
-        <form id="register-form" class="form-inputs" action="process.php" method="post" style="display: none">
+        <form id="register-form" class="form-inputs" method="post" style="display: none">
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" required>
             <label for="email">Email:</label>
@@ -199,17 +204,6 @@
             <input type="password" id="password" name="password" required>
             <button type="submit">Register</button>
         </form>
-    </div>
-    <div class="loader-container" style="display:none">
-        <div class="loader">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-    </div>
-    <div class="notification">
-        <div class="notification-message"></div>
-        <div class="notification-progress"></div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -221,6 +215,14 @@
             // Получаем формы авторизации и регистрации
             var loginForm = $('#login-form');
             var registerForm = $('#register-form');
+
+            // Получаем контейнер лоадера и уведомления
+            var loaderContainer = $('.loader-container');
+            var notification = $('.notification');
+
+            // Получаем элементы уведомления
+            var notificationMessage = $('.notification-message');
+            var notificationProgress = $('.notification-progress');
 
             // Добавляем обработчик события для кнопки Login
             loginBtn.on('click', function () {
@@ -248,63 +250,50 @@
 
             // Добавляем обработчик события для отправки формы
             $('form').on('submit', function (event) {
-                event.preventDefault();
-                var form = $(this);
-                var url = form.attr('action');
-                var data = form.serialize();
+                event.preventDefault(); // Отменяем стандартное поведение формы
 
                 // Показываем лоадер
-                $('.loader-container').show();
+                loaderContainer.show();
 
+                // Получаем данные формы
+                var form = $(this);
+                var formData = form.serialize();
+
+                // Отправляем запрос на сервер
                 $.ajax({
+                    url: form.attr('action'),
                     type: 'POST',
-                    url: url,
-                    data: data,
+                    data: formData,
                     success: function (response) {
-                        // Скрываем лоадер
-                        $('.loader-container').hide();
+                        // Прячем лоадер
+                        loaderContainer.hide();
+
+                        // Очищаем форму
+                        form.trigger('reset');
 
                         // Показываем уведомление
-                        var notification = $('.notification');
-                        var message = response.message;
-                        notification.find('.notification-message').text(message);
                         notification.show();
 
-                        // Автоматически скрываем уведомление через 5 секунд
-                        var progress = notification.find('.notification-progress');
-                        var width = 0;
-                        var interval = setInterval(function () {
-                            if (width >= 100) {
-                                clearInterval(interval);
+                        // Выводим сообщение в уведомление
+                        notificationMessage.text(response.message);
+
+                        // Запускаем таймер для скрытия уведомления
+                        var progress = 0;
+                        var timer = setInterval(function () {
+                            progress++;
+                            notificationProgress.width(progress + '%');
+                            if (progress == 100) {
+                                clearInterval(timer);
                                 notification.hide();
-                            } else {
-                                width += 20;
-                                progress.css('width', width + '%');
                             }
-                        }, 1000);
+                        }, 20);
                     },
-                    error: function (xhr) {
-                        // Скрываем лоадер
-                        $('.loader-container').hide();
+                    error: function (response) {
+                        // Прячем лоадер
+                        loaderContainer.hide();
 
-                        // Показываем уведомление об ошибке
-                        var notification = $('.notification');
-                        var message = xhr.responseJSON.message;
-                        notification.find('.notification-message').text(message);
-                        notification.show();
-
-                        // Автоматически скрываем уведомление через 5 секунд
-                        var progress = notification.find('.notification-progress');
-                        var width = 0;
-                        var interval = setInterval(function () {
-                            if (width >= 100) {
-                                clearInterval(interval);
-                                notification.hide();
-                            } else {
-                                width += 20;
-                                progress.css('width', width + '%');
-                            }
-                        }, 1000);
+                        // Выводим сообщение об ошибке в консоль
+                        console.error(response);
                     }
                 });
             });
