@@ -13,15 +13,11 @@
 
         .container {
             margin: 100px auto;
-            width: 670px;
-        }
-
-        .box {
-            position: relative;
-            padding: 30px 30px 70px 30px;
-            border-radius: 10px;
+            max-width: 940px;
             background-color: #fff;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            position: relative;
         }
 
         .cart-icon {
@@ -31,37 +27,54 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 50px;
+            width: 150px;
             height: 50px;
-            border-radius: 50%;
+            border-radius: 5px;
             background-color: #ffd369;
             color: #fff;
             font-size: 24px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .checkout {
+            display: block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            background-color: #ffce00;
+            color: #fff;
+            font-size: 20px;
+            text-align: center;
+            cursor: pointer;
         }
 
         .product {
             display: flex;
+            flex-direction: column;
             align-items: center;
             padding: 20px;
-            margin-bottom: 20px;
+            margin: 20px;
             border: 1px solid #e0e0e0;
             border-radius: 10px;
+            width: calc((100% / 2) - 30px);
+            height: 350px;
+            text-align: center;
+            overflow: hidden;
+            position: relative;
         }
 
         .product-image {
-            width: 25%;
-            height: 100%;
-            margin-right: 20px;
+            width: 100%;
+            height: 70%;
+            margin-bottom: 10px;
         }
 
         .product-image img {
             width: 100%;
-            height: auto;
+            height: 100%;
+            object-fit: cover;
             border-radius: 5px;
-        }
-
-        .product-info {
-            width: 75%;
         }
 
         .product-name {
@@ -79,180 +92,207 @@
         .product-actions {
             display: flex;
             align-items: center;
-            justify-content: flex-end;
-            margin-top: 10px;
+            justify-content: center;
+            margin-top: auto;
+            margin-bottom: 10px;
         }
 
-        .product-quantity {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            border: 1px solid #e0e0e0;
-            border-radius: 50%;
-            margin: 0 10px;
-            font-size: 24px;
-        }
-
-        .plus,
-        .minus {
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .quantity-btn {
             width: 30px;
             height: 30px;
+            margin: 0 5px;
+            background-color: #e0e0e0;
+            border: none;
             border-radius: 50%;
-            background-color: #ffd369;
-            color: #fff;
-            font-size: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #555;
             cursor: pointer;
         }
 
-        .plus:hover,
-        .minus:hover {
-            background-color: #ffce00;
+        .quantity-btn:hover {
+            background-color: #ccc;
         }
 
-        .cart-total {
-            margin-top: 20px;
-            text-align: right;
+        .slick-slider {
+            margin-top: 80px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
         }
 
-        .cart-total span {
-            font-size: 18px;
-            font-weight: bold;
+        .slick-prev:before,
+        .slick-next:before {
+            color: black;
         }
 
-        .checkout {
-            display: block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            border-radius: 5px;
-            background-color: #ffd369;
-            color: #fff;
-            font-size: 20px;
-            text-align: center;
-            cursor:
-        }
+        .slick-prev:before {
+            content: '←';
+            font-size: 40px;
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            transform: translate(0, -50%);
+        z-index: 1;
+        cursor: pointer;
+    }
 
-        .checkout:hover {
-            background-color: #ffce00;
-        }
-    </style>
+    .slick-next:before {
+        content: '→';
+        font-size: 40px;
+        position: absolute;
+        top: 50%;
+        right: 20px;
+        transform: translate(0, -50%);
+        z-index: 1;
+        cursor: pointer;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
 </head>
-
 <body>
     <div class="container">
-        <div class="box">
-            <div class="cart-icon">
-                <span>&#x1F6D2;</span>
-                <span>$0.00</span>
+        <div class="cart-icon">
+            <span>&#x1F6D2;</span>
+            <span>$0.00</span>
+            <button class="checkout-btn">Оформить заказ</button>
+        </div>
+        <div class="slick-slider">
+            <div class="product">
+                <div class="product-image">
+                    <img src="https://via.placeholder.com/200x200?text=Product+1" alt="Product 1">
+                </div>
+                <div class="product-name">Product 1</div>
+                <div class="product-price">$19.99</div>
+                <div class="product-actions">
+                    <button class="quantity-btn minus-btn">-</button>
+                    <span class="product-quantity">0</span>
+                    <button class="quantity-btn plus-btn">+</button>
+                </div>
+                <a href="#" class="checkout">Checkout</a>
             </div>
             <div class="product">
                 <div class="product-image">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
-                        <circle cx="25" cy="25" r="20" fill="#ddd" />
-                        <circle cx="25" cy="25" r="18" fill="#fff" />
-                    </svg>
+                    <img src="https://via.placeholder.com/200x200?text=Product+2" alt="Product 2">
                 </div>
-                <div class="product-info">
-                    <div class="product-name">Product 1</div>
-                    <div class="product-price">$19.99</div>
-                    <div class="product-actions">
-                        <div class="minus">-</div>
-                        <div class="product-quantity">0</div>
-                        <div class="plus">+</div>
-                    </div>
+                <div class="product-name">Product 2</div>
+                <div class="product-price">$29.99</div>
+                <div class="product-actions">
+                    <button class="quantity-btn minus-btn">-</button>
+                    <span class="product-quantity">0</span>
+                    <button class="quantity-btn plus-btn">+</button>
                 </div>
+                <a href="#" class="checkout">Checkout</a>
             </div>
             <div class="product">
                 <div class="product-image">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
-                        <circle cx="25" cy="25" r="20" fill="#ddd" />
-                        <circle cx="25" cy="25" r="18" fill="#fff" />
-                    </svg>
+                    <img src="https://via.placeholder.com/200x200?text=Product+3" alt="Product 3">
                 </div>
-                <div class="product-info">
-                    <div class="product-name">Product 2</div>
-                    <div class="product-price">$29.99</div>
-                    <div class="product-actions">
-                        <div class="minus">-</div>
-                        <div class="product-quantity">0</div>
-                        <div class="plus">+</div>
-                    </div>
+                <div class="product-name">Product 3</div>
+                <div class="product-price">$39.99</div>
+                <div class="product-actions">
+                    <button class="quantity-btn minus-btn">-</button>
+                    <span class="product-quantity">0</span>
+                    <button class="quantity-btn plus-btn">+</button>
                 </div>
+                <a href="#" class="checkout">Checkout</a>
             </div>
             <div class="product">
                 <div class="product-image">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
-                        <circle cx="25" cy="25" r="20" fill="#ddd" />
-                        <circle cx="25" cy="25" r="18" fill="#fff" />
-                    </svg>
+                    <img src="https://via.placeholder.com/200x200?text=Product+4" alt="Product 4">
                 </div>
-                <div class="product-info">
-                    <div class="product-name">Product 3</div>
-                    <div class="product-price">$39.99</div>
-                    <div class="product-actions">
-                        <div class="minus">-</div>
-                        <div class="product-quantity">0</div>
-                        <div class="plus">+</div>
-                    </div>
+                <div class="product-name">Product 4</div>
+                <div class="product-price">$49.99</div>
+                <div class="product-actions">
+                    <button class="quantity-btn minus-btn">-</button>
+                    <span class="product-quantity">0</span>
+                    <button class="quantity-btn plus-btn">+</button>
                 </div>
+                <a href="#" class="checkout">Checkout</a>
+        </div>
+        <div class="product">
+            <div class="product-image">
+                <img src="https://via.placeholder.com/200x200?text=Product+5" alt="Product 5">
             </div>
-            <div class="cart-total">
-                Total: <span>$0.00</span>
+            <div class="product-name">Product 5</div>
+            <div class="product-price">$59.99</div>
+            <div class="product-actions">
+                <button class="quantity-btn minus-btn">-</button>
+                <span class="product-quantity">0</span>
+                <button class="quantity-btn plus-btn">+</button>
+            </div>
+            <a href="#" class="checkout">Checkout</a>
+        </div>
+        <div class="product">
+            <div class="product-image">
+                <img src="https://via.placeholder.com/200x200?text=Product+6" alt="Product 6">
+            </div>
+            <div class="product-name">Product 6</div>
+            <div class="product-price">$69.99</div>
+            <div class="product-actions">
+                <button class="quantity-btn minus-btn">-</button>
+                <span class="product-quantity">0</span>
+                <button class="quantity-btn plus-btn">+</button>
+            </div>
+            <a href="#" class="checkout">Checkout</a>
+        </div>
+        <div class="product">
+            <div class="product-image">
+                <img src="https://via.placeholder.com/200x200?text=Product+7" alt="Product 7">
+            </div>
+            <div class="product-name">Product 7</div>
+            <div class="product-price">$79.99</div>
+            <div class="product-actions">
+                <button class="quantity-btn minus-btn">-</button>
+                <span class="product-quantity">0</span>
+                <button class="quantity-btn plus-btn">+</button>
+            </div>
+            <a href="#" class="checkout">Checkout</a>
+        </div>
+        <div class="product">
+            <div class="product-image">
+                <img src="https://via.placeholder.com/200x200?text=Product+8" alt="Product 8">
+            </div>
+            <div class="product-name">Product 8</div>
+            <div class="product-price">$89.99</div>
+            <div class="product-actions">
+                <button class="quantity-btn minus-btn">-</button>
+                <span class="product-quantity">0</span>
+                <button class="quantity-btn plus-btn">+</button>
             </div>
             <a href="#" class="checkout">Checkout</a>
         </div>
     </div>
-    <script>
-        var cartIcon = document.querySelector('.cart-icon');
-        var cartTotal = document.querySelector('.cart-total span');
-        // Находим все кнопки + и -
-        var plusButtons = document.querySelectorAll('.plus');
-        var minusButtons = document.querySelectorAll('.minus');
+    <div class="slick-arrow-prev">
+        <i class="fas fa-chevron-left"></i>
+    </div>
+    <div class="slick-arrow-next">
+        <i class="fas fa-chevron-right"></i>
+    </div>
+</div>
 
-        // Обрабатываем клик на кнопке +
-        for (var i = 0; i < plusButtons.length; i++) {
-            plusButtons[i].addEventListener('click', function () {
-                var quantityElem = this.parentElement.querySelector('.product-quantity');
-                var quantity
-                quantityElem.textContent = parseInt(quantityElem.textContent) + 1;
-                updateCart();
-            });
-        }
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+<!-- <script>
+    $(document).ready(function () {
+        $('.slick-slider').slick({
+            arrows: true,
+            prevArrow: $('.slick-arrow-prev'),
+            nextArrow: $('.slick-arrow-next'),
+            slidesToShow: 4,
+            slidesToScroll: 4,
+            responsive: [
+                {
+                    breakpoint: 768,
+                    settings: {
+                        slidesToShow -->
 
-        // Обрабатываем клик на кнопке -
-        for (var i = 0; i < minusButtons.length; i++) {
-            minusButtons[i].addEventListener('click', function () {
-                var quantityElem = this.parentElement.querySelector('.product-quantity');
-                if (parseInt(quantityElem.textContent) > 0) {
-                    quantityElem.textContent = parseInt(quantityElem.textContent) - 1;
-                    updateCart();
-                }
-            });
-        }
+<script>
+  $(document).ready(function(){$(".slick-slider").slick({arrows:!0,prevArrow:$(".slick-arrow-prev"),nextArrow:$(".slick-arrow-next"),slidesToShow:4,slidesToScroll:4,responsive:[{breakpoint:768,settings:{slidesToShow:2,slidesToScroll:2}}]})});
 
-        // Обновляем корзину
-        function updateCart() {
-            var cartTotalValue = 0;
-            var cartQuantity = 0;
+</script>
 
-            // Находим все элементы с количеством товара и суммируем их
-            var quantityElems = document.querySelectorAll('.product-quantity');
-            for (var i = 0; i < quantityElems.length; i++) {
-                cartQuantity += parseInt(quantityElems[i].textContent);
-                cartTotalValue += parseInt(quantityElems[i].textContent) * parseFloat(quantityElems[i].parentElement.parentElement.querySelector('.product-price').textContent.substr(1));
-            }
-
-            // Обновляем значение корзины
-            cartTotal.textContent = '$' + cartTotalValue.toFixed(2);
-
-            // Обновляем значение в иконке корзины
-            cartIcon.childNodes[1].textContent = '$' + cartTotalValue.toFixed(2);
-        }
-    </script>
 </body>
 
 </html>

@@ -8,21 +8,22 @@ $(document).ready(function () {
             success: function (response) {
                 successCallback(response);
             },
-            error: function (error) {
-                errorCallback(error.statusText);
+            error: function (jqXHR, textStatus, errorThrown) {
+                errorCallback(jqXHR.responseJSON);
             },
         });
     }
 
     // Функция для отображения уведомления
     function showNotification(type, message, duration) {
+        $(".notification-box").show();
         var $notification = $("<div>", {
             class: "notification " + type,
             text: message,
         });
         var $progress = $("<div>", { class: "notification-progress" });
         $notification.append($progress);
-        $("body").append($notification);
+        $(".notification-box").append($notification).show();
         $notification.animate(
             {
                 top: 20,
@@ -44,6 +45,7 @@ $(document).ready(function () {
                     500,
                     function () {
                         $notification.remove();
+                        $(".notification-box").hide();
                     }
                 );
             } else {
@@ -51,6 +53,7 @@ $(document).ready(function () {
             }
         }, 100);
     }
+    
 
     // Получаем кнопки переключения формы
     var $loginBtn = $("#login-btn");
@@ -94,6 +97,7 @@ $(document).ready(function () {
         var data = {
             email: email,
             password: password,
+            login: true
         };
         // Отправляем данные на сервер
         postData(
@@ -101,14 +105,23 @@ $(document).ready(function () {
             data,
             function (response) {
                 // Показываем уведомление об успешной авторизации
-                showNotification("Success", "You have successfully logged in!", 5);
+                showNotification("Success", "You have successfully logged in!", 40);
+                
+                response = JSON.parse(response);
+                if (response.url) {
+                    window.location.href = response.url;
+                } else {
+                    console.log(response.message);
+                }
 
                 // Сбрасываем значения полей формы
                 $loginForm[0].reset();
             },
             function (error) {
+                var errorResponse = JSON.parse(error);
+
                 // Показываем уведомление об ошибке авторизации
-                showNotification("Error", error, 5);
+                showNotification("Error", errorResponse.message, 40);
             }
         );
     });
@@ -125,6 +138,7 @@ $(document).ready(function () {
             name: name,
             email: email,
             password: password,
+            registration: true
         };
         // Отправляем данные на сервер
         postData(
@@ -132,15 +146,23 @@ $(document).ready(function () {
             data,
             function (response) {
                 // Показываем уведомление об успешной регистрации
-                showNotification("Success", "You have successfully registered!", 5);
-                // Скрываем форму регистрации
-                $registerForm.hide();
+                showNotification("Success", "You have successfully registered!", 40);
+                
+                response = JSON.parse(response);
+                if (response.url) {
+                    window.location.href = response.url;
+                } else {
+                    console.log(response.message);
+                }
+
                 // Сбрасываем значения полей формы
                 $registerForm[0].reset();
             },
             function (error) {
+                var errorResponse = JSON.parse(error);
+
                 // Показываем уведомление об ошибке регистрации
-                showNotification("Error", error, 5);
+                showNotification("Error", errorResponse.message, 40);
             }
         );
     });

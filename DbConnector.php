@@ -1,5 +1,7 @@
 <?php
-// Класс для работы с базой данных
+/**
+ * Класс для работы с базой данных
+ */
 class DbConnector
 {
     // Константы для подключения к базе данных
@@ -11,8 +13,12 @@ class DbConnector
     // Соединение с базой данных
     private $connection;
 
-    // Конструктор класса
-    function __construct()
+    /**
+     * Конструктор класса DbConnector, подключается к базе данных
+     *
+     * @throws PDOException
+     */
+    public function __construct()
     {
         // Подключение к базе данных
         $dsn = "mysql:host=" . self::DB_HOST . ";dbname=" . self::DB_NAME . ";charset=utf8";
@@ -24,7 +30,15 @@ class DbConnector
         }
     }
 
-    // Метод для выполнения SELECT запросов
+    /**
+     * Метод для выполнения SELECT запросов
+     *
+     * @param string      $table     Имя таблицы
+     * @param string|null $where     Условие для WHERE
+     * @param string|null $order_by  Условие для ORDER BY
+     *
+     * @return array Массив данных
+     */
     public function select($table, $where = null, $order_by = null)
     {
         $query = "SELECT * FROM $table";
@@ -38,7 +52,14 @@ class DbConnector
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Метод для выполнения INSERT запросов
+    /**
+     * Метод для выполнения INSERT запросов
+     *
+     * @param string $table Имя таблицы
+     * @param array  $data  Данные для добавления
+     *
+     * @return bool|int|string Результат выполнения запроса
+     */
     public function insert($table, $data)
     {
         $columns = implode(", ", array_keys($data));
@@ -48,10 +69,18 @@ class DbConnector
         foreach ($data as $key => $value) {
             $stmt->bindValue(":$key", $value);
         }
-        return $stmt->execute();
+        return $stmt->execute() ? $this->connection->lastInsertId() : false;
     }
 
-    // Метод для выполнения UPDATE запросов
+    /**
+     * Метод для выполнения UPDATE запросов
+     *
+     * @param string      $table Имя таблицы
+     * @param array       $data  Данные для обновления
+     * @param string|null $where Условие для WHERE
+     *
+     * @return bool Результат выполнения запроса
+     */
     public function update($table, $data, $where = null)
     {
         $set_values = array();
@@ -70,7 +99,14 @@ class DbConnector
         return $stmt->execute();
     }
 
-    // Метод для выполнения DELETE запросов
+    /**
+     * Выполняет запрос DELETE к базе данных
+     * 
+     * @param string $table Название таблицы
+     * @param string $where Условие WHERE
+     * 
+     * @return int Количество удаленных строк
+     */
     public function delete($table, $where)
     {
         $query = "DELETE FROM $table WHERE $where";

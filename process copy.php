@@ -32,10 +32,8 @@ class UserManager
      */
     public function getUserByEmailAndPassword(string $email, string $password): ?array
     {
-        // Выбираем пользователя из базы данных по email
         $result = $this->db->select("users", "email='$email'");
 
-        // Проверяем, что пользователь найден и пароль верный
         if (count($result) > 0 && password_verify($password, $result[0]['password'])) {
             return $result[0];
         }
@@ -54,14 +52,12 @@ class UserManager
      */
     public function registerUser(string $name, string $email, string $password): bool
     {
-        // Проверяем, что пользователь с таким email еще не зарегистрирован
         $result = $this->db->select("users", "email='$email'");
 
         if (count($result) > 0) {
             return false;
         }
 
-        // Добавляем пользователя в базу данных
         $data = array(
             "name" => $name,
             "email" => $email,
@@ -85,7 +81,7 @@ class Process
     private $userManager;
 
     /**
-     * Конструктор класса Process, создает объект класса UserManager
+     * Конструктор класса Process
      */
     public function __construct()
     {
@@ -103,25 +99,13 @@ class Process
      */
     public function register(string $name, string $email, string $password): string
     {
-        // Пытаемся зарегистрировать пользователя
-        if (!$userId = $this->userManager->registerUser($name, $email, $password)) {
+        if (!$this->userManager->registerUser($name, $email, $password)) {
             http_response_code(409);
-            $response = [
-                'message' => 'User with this email already exists',
-                'url' => null
-            ];
-            return json_encode($response);
+            return 'User with this email already exists';
         }
-        
-        $_SESSION['user_id'] = $userId;
 
-        
-        // Если пользователь зарегистрирован, возвращаем сообщение об успехе и URL-адрес для перенаправления на страницу каталога
-        $response = [
-            'message' => 'User successfully registered',
-            'url' => '/catalog.php'
-        ];
-        return json_encode($response);
+        header('Location: /catalog.php');
+        exit();
     }
 
     /**
@@ -138,21 +122,13 @@ class Process
 
         if (!$user) {
             http_response_code(401);
-            $response = [
-                'message' => 'Wrong email or password',
-                'url' => null
-            ];
-            return json_encode($response);
+            return 'Wrong email or password';
         }
 
         $_SESSION['user_id'] = $user['id'];
-        
-        // Если пользователь авторизован, возвращаем сообщение об успехе и URL-адрес для перенаправления на страницу каталога
-        $response = [
-            'message' => 'User successfully logged in',
-            'url' => '/catalog.php'
-        ];
-        return json_encode($response);
+
+        header('Location: /catalog.php');
+        exit();
     }
 }
 
@@ -169,16 +145,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = filter_var($data['email'], FILTER_SANITIZE_EMAIL);
     $password = $data['password'];
 
+    if (strlen($password) < 8) {
+        http_response_code(400);
+        echo 'Password is too short';
+        exit;
+    }
+
     // Проверяем, какая кнопка была нажата на форме
-    if (isset($data['registration'])) {
-        $name = filter_var($data['name'], FILTER_SANITIZE_SPECIAL_CHARS);
+    if (isset($data['register'])) {
         $result = $process->register($name, $email, $password);
-    
-        header('Content-Type: application/json');
-        echo json_encode($result);
+
+        if ($result !== 'User with this email already exists') {
+            header('Location: /catalog.php');
+        }
+        echo $result;
     } elseif (isset($data['login'])) {
-        header('Content-Type: application/json');
-        echo json_encode($process->login($email, $password));
+        echo $process->login($email, $password);
     }
 }
 ?>
