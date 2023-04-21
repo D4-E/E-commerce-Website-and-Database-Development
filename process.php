@@ -17,9 +17,9 @@ class UserManager
     /**
      * Конструктор класса UserManager, создает объект класса DbConnector
      */
-    public function __construct()
+    public function __construct(DbConnector $db)
     {
-        $this->db = new DbConnector();
+        $this->db = $db;
     }
 
     /**
@@ -85,11 +85,19 @@ class Process
     private $userManager;
 
     /**
-     * Конструктор класса Process, создает объект класса UserManager
+     * Объект для работы с базой данных
+     *
+     * @var DbConnector
+     */
+    private $db;
+
+    /**
+     * Конструктор класса Process
      */
     public function __construct()
     {
-        $this->userManager = new UserManager();
+        $this->db = new DbConnector();
+        $this->userManager = new UserManager($this->db);
     }
 
     /**
@@ -104,7 +112,7 @@ class Process
     public function register(string $name, string $email, string $password): string
     {
         // Пытаемся зарегистрировать пользователя
-        if (!$userId = $this->userManager->registerUser($name, $email, $password)) {
+        if (!($userId = $this->userManager->registerUser($name, $email, $password))) {
             http_response_code(409);
             $response = [
                 'message' => 'User with this email already exists',
@@ -154,7 +162,59 @@ class Process
         ];
         return json_encode($response);
     }
+
+    /**
+     * Сохраняет заказ в базе данных и добавляет товары заказа
+     *
+     * @param array $data Массив данных заказа, содержащий информацию о товарах
+     *
+     * @return string JSON-кодированный ответ с сообщением о результате сохранения заказа
+     */
+    public function saveOrder(array $data): string
+    {
+        if (!isset($_SESSION['user_id'])) {
+            http_response_code(401);
+            return json_encode(['message' => 'Unauthorized']);
+        }
+
+        $userId = $_SESSION['user_id'];
+        $totalCost = 0;
+
+        // Рассчитываем общую стоимость заказа
+        foreach ($data['items'] as $item) {
+            $totalCost += $item['quantity'] * $item['price'];
+        }
+
+        $orderData = [
+            'user_id' => $userId,
+            'total_cost' => $totalCost,
+            'shipping_address' => $data['address'],
+            'customer_comment' => $data['comment'],
+            'order_status' => 1
+        ];
+
+        $orderId = $this->db->insert("orders", $orderData);
+
+        if ($orderId) {
+            foreach ($data['items'] as $productId => $item) {
+                $orderItemData = [
+                    'order_id' => $orderId,
+                    'product_id' => $productId,
+                    'quantity' => $item['quantity'],
+                    'unit_price' => $item['price']
+                ];
+
+                $this->db->insert("order_items", $orderItemData);
+            }
+            return json_encode(['message' => 'Order successfully placed']);
+        } else {
+            http_response_code(500);
+            return json_encode(['message' => 'Failed to save the order']);
+        }
+    }
 }
+
+session_start();
 
 // Создаем объект класса Process
 $process = new Process();
@@ -165,20 +225,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $json = file_get_contents('php://input');
     $data = json_decode($json, true);
 
-    // Получаем отдельные переменные из декодированных данных
-    $email = filter_var($data['email'], FILTER_SANITIZE_EMAIL);
-    $password = $data['password'];
-
     // Проверяем, какая кнопка была нажата на форме
-    if (isset($data['registration'])) {
-        $name = filter_var($data['name'], FILTER_SANITIZE_SPECIAL_CHARS);
-        $result = $process->register($name, $email, $password);
-    
+    if (isset($data['registration']) || isset($data['login'])) {
+        // Получаем отдельные переменные из декодированных данных
+        $email = filter_var($data['email'], FILTER_SANITIZE_EMAIL);
+        $password = $data['password'];
+
+        if (isset($data['registration'])) {
+            $name = filter_var($data['name'], FILTER_SANITIZE_SPECIAL_CHARS);
+            $result = $process->register($name, $email, $password);
+
+            header('Content-Type: application/json');
+            echo json_encode($result);
+        } else {
+            header('Content-Type: application/json');
+            echo json_encode($process->login($email, $password));
+        }
+    } elseif (isset($data['items'])) {
         header('Content-Type: application/json');
-        echo json_encode($result);
-    } elseif (isset($data['login'])) {
-        header('Content-Type: application/json');
-        echo json_encode($process->login($email, $password));
+        echo json_encode($process->saveOrder($data));
     }
 }
-?>

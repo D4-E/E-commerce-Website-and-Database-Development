@@ -1,15 +1,12 @@
 <?php
-// Имитация данных, полученных из базы данных
-$products = [];
-for ($i = 1; $i <= 12; $i++) {
-    $products[] = [
-        'id' => $i,
-        'name' => "Product $i",
-        'price' => $i * 10,
-        'image' => "https://via.placeholder.com/150?text=Product+$i",
-        'details' => "Product $i details..."
-    ];
-}
+// Подключение файла с классом DbConnector
+require_once 'DbConnector.php';
+
+// Создание объекта DbConnector
+$db = new DbConnector();
+
+// Запрос к базе данных для получения товаров
+$products = $db->select("products");
 ?>
 
 <!DOCTYPE html>
@@ -156,26 +153,6 @@ for ($i = 1; $i <= 12; $i++) {
             overflow-y: auto;
         }
 
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 200;
-        }
-
-        .modal-content {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 5px;
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-        }
-
         .product-details {
             background-color: #f2f2f2;
             padding: 20px;
@@ -235,6 +212,76 @@ for ($i = 1; $i <= 12; $i++) {
             object-fit: cover;
             margin-bottom: 10px;
         }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            border-radius: 10px;
+        }
+
+        .close-btn {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .order-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .order-form label {
+            font-weight: bold;
+        }
+
+        .order-form input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .submit-btn {
+            background-color: #ffd700;
+            color: black;
+            padding: 10px 20px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .submit-btn:hover {
+            background-color: #ffc107;
+        }
+
     </style>
 </head>
 <body>
@@ -248,15 +295,18 @@ for ($i = 1; $i <= 12; $i++) {
         <div class="popup-description"></div>
     </div>
 </div>
-<div class="modal" style="display: none;">
+<div class="modal">
     <div class="modal-content">
+        <span class="close-btn">&times;</span>
         <h2>Оформление заказа</h2>
-        <form id="order-form">
+        <form id="order-form" class="order-form">
             <label for="phone">Телефон:</label>
             <input type="tel" id="phone" name="phone" required>
             <label for="address">Адрес:</label>
             <input type="text" id="address" name="address" required>
-            <button type="submit">Оформить заказ</button>
+            <label for="comment">Комментарий:</label>
+            <textarea id="comment" name="comment"></textarea>
+            <button type="submit" class="submit-btn">Оформить заказ</button>
         </form>
     </div>
 </div>
@@ -268,10 +318,13 @@ for ($i = 1; $i <= 12; $i++) {
     </div>
     <div class="rectangle">
         <div class="slick-slider">
-            <?php foreach ($products as $product) : ?>
+            <?php foreach ($products as $key => $product) : ?>
                 <div class="product" data-id="<?php echo $product['id']; ?>" data-img="<?php echo $product['image']; ?>" data-name="<?php echo $product['name']; ?>" data-price="<?php echo $product['price']; ?>">
                     <div class="product-info">
-                        <img src="<?php echo $product['image']; ?>" alt="<?php echo $product['name']; ?>">
+                        <img src="<?php echo (!empty($product['image'])
+                            ? $product['image']
+                            : 'https://via.placeholder.com/150?text=Product+' . ($key + 1));
+                        ?>" alt="<?php echo $product['name']; ?>">
                         <h3><?php echo $product['name']; ?></h3>
                         <p>Price: $<?php echo '<span class="price">' . $product['price'] . '</span>'; ?></p>
                         <div class="quantity-controls">
@@ -281,7 +334,7 @@ for ($i = 1; $i <= 12; $i++) {
                         <button class="details-btn">Details</button>
                     </div>
                     <div class="product-details" style="display: none;">
-                        <?php echo $product['details']; ?>
+                        <?php echo $product['description']; ?>
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -377,6 +430,44 @@ for ($i = 1; $i <= 12; $i++) {
 
             updateCartData(productId, price, -1);
             updateCartTotal();
+        });
+
+        $(".close-btn").on("click", function() {
+            $(".modal").hide();
+        });
+
+        // Отправка AJAX запроса при сабмите формы
+        $("#order-form").on("submit", function(event) {
+            event.preventDefault();
+
+            var phone = $("#phone").val();
+            var address = $("#address").val();
+            var comment = $("#comment").val();
+            var checkoutData = $(".checkout-btn").data("cart");
+
+            console.log(checkoutData);
+
+            var data = {
+                phone: phone,
+                address: address,
+                comment: comment,
+                items: checkoutData
+            };
+
+            $.ajax({
+                type: "POST",
+                url: 'process.php',
+                data: JSON.stringify(data),
+                dataType: 'json',
+                success: function(response) {
+                    response = JSON.parse(response);
+                    // Замена содержимого модального окна на сообщение об успешном оформлении заказа
+                    $(".modal-content").html("<h2>" + response.message + "</h2>");
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log('Error: ' + textStatus + ' ' + errorThrown);
+                },
+            });
         });
     });
 </script>
